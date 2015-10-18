@@ -10,8 +10,21 @@ import com.ebdev.lawservices.models.LegalCase;
 import com.ebdev.lawservices.models.LegalFile;
 import com.ebdev.lawservices.models.Party;
 
+/**
+ * Web Based Interface for the
+ * Law Services System.
+ *
+ * @version 1.0
+ * @since 10/15/2015
+ */
 public class WebInterface extends UserInterface {
 
+	/**
+	 * Gets a map from partyID to Party
+	 * of all the parties in the system.
+	 * 
+	 * @return map of parties in the system.
+	 */
 	public Map<Integer, Party> getPartyMap() {
 		
 		Map<Integer, Party> parties = new HashMap<>();
@@ -27,6 +40,12 @@ public class WebInterface extends UserInterface {
 		return parties;
 	}
 	
+	/**
+	 * Retrieves a list of all legal cases
+	 * in the system.
+	 * 
+	 * @return List of all Legal Cases.
+	 */
 	public List<LegalCase> getAllCases() {
 		try {
 			return getDB().getAllLegalCases();
@@ -35,9 +54,15 @@ public class WebInterface extends UserInterface {
 		}
 		
 		// If fails, return an empty list.
-		return new ArrayList();
+		return new ArrayList<LegalCase>();
 	}
 	
+	/**
+	 * Retrieves a list of all parties who are
+	 * a client on legal cases in the system.
+	 * 
+	 * @return List of client parties.
+	 */
 	public List<Party> getAllClients() {
 		
 		List<Party> clients = new ArrayList<>();
@@ -51,6 +76,12 @@ public class WebInterface extends UserInterface {
 		return clients;
 	}
 	
+	/**
+	 * Gets a list of a particular client's cases
+	 * 
+	 * @param clientID the ID of the client to retrieve cases.
+	 * @return List of Legal Cases belonging to the client.
+	 */
 	public List<LegalCase> getClientsCases(int clientID) {
 		
 		List<LegalCase> cases = new ArrayList<>();
@@ -65,6 +96,13 @@ public class WebInterface extends UserInterface {
 		return cases;
 	}
 	
+	/**
+	 * Gets the LegalCase associated with
+	 * a specific legal case.
+	 * 
+	 * @param caseID of the case to get.
+	 * @return the legal case
+	 */
 	public LegalCase getLegalCase(int caseID) {
 		try {
 			return getDB().getLegalCase(caseID);
@@ -75,6 +113,13 @@ public class WebInterface extends UserInterface {
 		return null;
 	}
 	
+	/**
+	 * Gets the files associated with
+	 * a specific legal case.
+	 * 
+	 * @param caseID of the case to get files of.
+	 * @return List of legal files used in this case.
+	 */
 	public List<LegalFile> getLegalCasesFiles(int caseID) {
 		
 		List<LegalFile> files = new ArrayList<>();
@@ -90,7 +135,6 @@ public class WebInterface extends UserInterface {
 		
 		return files;
 	}
-	
 	
 	@Override
 	protected void kill() {
