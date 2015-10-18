@@ -2,9 +2,9 @@
     pageEncoding="ISO-8859-1"%>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
 <%@ page import="java.util.Map"%>
-<%@ page import="com.comname.lawservices.ui.WebInterface"%>
-<%@ page import="com.comname.lawservices.models.Party"%>
-<%@ page import="com.comname.lawservices.models.LegalCase"%>
+<%@ page import="com.ebdev.lawservices.ui.WebInterface"%>
+<%@ page import="com.ebdev.lawservices.models.Party"%>
+<%@ page import="com.ebdev.lawservices.models.LegalCase"%>
 <%
 	WebInterface wI = new WebInterface();
 	Map<Integer, Party> parties = wI.getPartyMap();
