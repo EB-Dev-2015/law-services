@@ -26,7 +26,11 @@
 		<li><a href="clients.jsp">Clients</a></li>
 	</ul>
 	
+	
 	<h2>Cases</h2>
+	
+	<button onclick="location.href='case.jsp?caseID=0'">Add Case</button>
+	
 	<table>
 		<tr><th>Case Name</th><th>Client Name</th><th>Opposition Name</th><th>Start Date</th><th>End Date</th></tr>
 		<c:forEach var="legalCase" items="${cases}">

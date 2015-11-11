@@ -1,10 +1,18 @@
 package com.ebdev.lawservices.ui;
 
+import java.io.IOException;
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Collection;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
+
+import javax.servlet.http.HttpServletResponse;
+import javax.servlet.jsp.JspWriter;
 
 import com.ebdev.lawservices.models.LegalCase;
 import com.ebdev.lawservices.models.LegalFile;
@@ -18,6 +26,22 @@ import com.ebdev.lawservices.models.Party;
  * @since 10/15/2015
  */
 public class WebInterface extends UserInterface {
+	
+	private HttpServletResponse response;
+	private JspWriter out;
+	
+	public WebInterface() {
+		this(null);
+	}
+	
+	public WebInterface(JspWriter out) {
+		this(null, out);
+	}
+	
+	public WebInterface(HttpServletResponse response, JspWriter out) {
+		this.response = response;
+		this.out = out;
+	}
 
 	/**
 	 * Gets a map from partyID to Party
@@ -63,9 +87,9 @@ public class WebInterface extends UserInterface {
 	 * 
 	 * @return List of client parties.
 	 */
-	public List<Party> getAllClients() {
+	public Collection<Party> getAllClients() {
 		
-		List<Party> clients = new ArrayList<>();
+		Set<Party> clients = new HashSet<Party>();
 		
 		Map<Integer, Party> parties = getPartyMap();
 		
@@ -136,6 +160,49 @@ public class WebInterface extends UserInterface {
 		return files;
 	}
 	
+	/**
+	 * Adds a legal case to the system.
+	 */
+	public void addLegalCase(String caseName, int clientID, int opposistionID, String description, String note) {
+		try {
+			getDB().insertLegalCase(caseName, clientID, opposistionID, new java.util.Date(), new java.util.Date(), description, note);
+		} catch (SQLException e) {
+			displayMessage("Failed to add legal case: " + e.getMessage());
+		}
+	}
+	
+	/**
+	 * Adds a legal case to the system.
+	 */
+	public void addLegalCase(String caseName, int clientID, int opposistionID, String description, String note, int startYear, int startMonth, int startDay, int endYear, int endMonth, int endDay) {
+		
+		java.util.Calendar startC = java.util.Calendar.getInstance();
+		startC.set(startYear, startMonth - 1, startDay, 0, 0, 0);
+		
+		java.util.Calendar endC = java.util.Calendar.getInstance();
+		endC.set(endYear, endMonth - 1, endDay, 0, 0, 0);
+
+		
+		try {
+			getDB().insertLegalCase(caseName, clientID, opposistionID, startC.getTime(), endC.getTime(), description, note);
+		} catch (SQLException e) {
+			displayMessage("Failed to add legal case: " + e.getMessage());
+		}
+	}
+	
+	/**
+	 * Deletes a legal case from the system.
+	 * 
+	 * @param caseID
+	 */
+	public void deleteLegalCase(int caseID) {
+		try {
+			getDB().deleteLegalCase(caseID);
+		} catch (SQLException e) {
+			displayMessage("Failed to delete legal case: " + e.getMessage());
+		}
+	}
+	
 	@Override
 	protected void kill() {
 		// Kills tomcat
@@ -144,6 +211,19 @@ public class WebInterface extends UserInterface {
 
 	@Override
 	protected void displayMessage(String message) {
+		if (out != null) {
+			
+			try {
+				out.print("<p id=\"error\">" + message + "</p>");
+			} catch (IOException e) {
+				System.out.println("Error displaying message: " + e.getMessage());
+			}
+			
+			if (response != null) {
+				response.setStatus(510);
+			}
+		}
+		
 		System.out.println(message);
 	}
 }
